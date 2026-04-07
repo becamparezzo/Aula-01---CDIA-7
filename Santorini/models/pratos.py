@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional
 
 class PratoInput(BaseModel):
@@ -7,24 +7,20 @@ class PratoInput(BaseModel):
     preco: float = Field(gt=0, description="Preço em reais")
     descricao: Optional[str] = Field(default=None, max_length=500)
     disponivel: bool = True
-    preco_promocional: float = Field(default=None, gt=0, description="Preço promocional em reais")
+    preco_promocional: Optional[float] = Field(default=None, gt=0, description="Preço promocional em reais")
 
-    @field_validator("preco_promocional")
-    @classmethod
-    def preco_promocional_menor_que_preco(cls, v, values):
-        if v is not None and "preco" in values and v >= values["preco"]:
-            raise ValueError("O preço promocional deve ser menor que o preço original")
-        
-        desconto = values["preco"] - v if v is not None else 0
-        if desconto > 0 and desconto / values["preco"] > 0.5:
-            raise ValueError("O desconto promocional não pode ser maior que 50% do preço original")
-        return v
-    
+    @model_validator(mode="after")
+    def validar_preco_promocional(self):
+        if self.preco_promocional is not None:
+            if self.preco_promocional >= self.preco:
+                raise ValueError("O preço promocional deve ser menor que o preço original")
+            desconto = self.preco - self.preco_promocional
+            if desconto / self.preco > 0.5:
+                raise ValueError("O desconto promocional não pode ser maior que 50% do preço original")
+        return self
+
 class PratoOutput(PratoInput):
     id: int
-    nome: str
-    categoria: str
-    preco: float
     criado_em: str
 
 class DisponibilidadeInput(BaseModel):
