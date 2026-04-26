@@ -7,6 +7,7 @@ from .routers import pratos
 from .routers import bebidas
 from .routers import pedidos
 from .routers import reservas
+from .routers import predict
 
 app = FastAPI(
     title=settings.app_name,
@@ -65,6 +66,12 @@ app.include_router(
     reservas.router,
     prefix="/reservas",
     tags=["Reservas"])
+
+app.include_router(
+    predict.router,
+    prefix="/predict",
+    tags=["Predict"]
+)
 
 @app.get("/", tags=["Informações"])
 async def root():
