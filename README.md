@@ -1,4 +1,4 @@
-# Santorini API 🏛️
+# Santorini API
 
 API REST de restaurante com pipeline de Machine Learning para predição de churn de clientes, desenvolvida com FastAPI e integração contínua via GitHub Actions.
 
