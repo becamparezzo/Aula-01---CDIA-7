@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.git/
+.gitignore
+*.md
+churn_dataset.csv
+treinar_modelo.py
+gerar_dados.py
+publicar_modelo.py
+model.pkl
